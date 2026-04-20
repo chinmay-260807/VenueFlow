@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VenueFlow | AI-Powered Event Assistant</title>
+    <meta name="description" content="VenueFlow - Your smart assistant for seamless stadium navigation and real-time event updates.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <!-- Firebase (App and Realtime Database) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-icon">🏟️</span>
+            <h1>VenueFlow</h1>
+        </div>
+        <div id="live-alerts" class="alerts-banner">
+            <div id="alert-content" class="alert-item">Welcome to VenueFlow! Loading live updates...</div>
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- Left Column: Map & Navigation -->
+        <section class="card map-container">
+            <div class="card-header">
+                <h2>Interactive Venue Map</h2>
+                <div class="legend">
+                    <span class="legend-item"><span class="dot low"></span> Low</span>
+                    <span class="legend-item"><span class="dot med"></span> Med</span>
+                    <span class="legend-item"><span class="dot high"></span> High</span>
+                </div>
+            </div>
+            <div id="map"></div>
+            <div id="zone-details" class="zone-info-panel hidden">
+                <h3 id="zone-name">Zone Name</h3>
+                <p id="zone-wait">Wait Time: --</p>
+                <p id="zone-status">Status: --</p>
+            </div>
+        </section>
+
+        <!-- Right Column: Stats & Planning -->
+        <aside class="side-panel">
+            <!-- Wait Times -->
+            <section class="card wait-times">
+                <div class="card-header">
+                    <h2>Live Wait Times</h2>
+                    <span class="live-indicator">LIVE</span>
+                </div>
+                <div id="wait-cards" class="grid-2">
+                    <!-- Cards will be injected by app.js -->
+                </div>
+            </section>
+
+            <!-- Route Suggester -->
+            <section class="card route-suggester">
+                <div class="card-header">
+                    <h2>Smart Route Suggester</h2>
+                </div>
+                <div class="form-group">
+                    <label for="start-point">Current Location</label>
+                    <select id="start-point">
+                        <option value="Gate A">Gate A</option>
+                        <option value="Gate B">Gate B</option>
+                        <option value="Gate C">Gate C</option>
+                        <option value="Gate D">Gate D</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="end-point">Destination</label>
+                    <select id="end-point">
+                        <option value="Food Court 1">Food Court 1</option>
+                        <option value="Food Court 2">Food Court 2</option>
+                        <option value="Restroom North">Restroom North</option>
+                        <option value="Section C">Section C</option>
+                    </select>
+                </div>
+                <button id="suggest-route" class="btn-primary">Find Best Path</button>
+                <div id="route-output" class="route-result hidden"></div>
+            </section>
+
+            <!-- Personal Planner -->
+            <section class="card planner">
+                <div class="card-header">
+                    <h2>Experience Planner</h2>
+                </div>
+                <div class="planner-form">
+                    <input type="text" id="user-section" placeholder="Seat Section (e.g., 204)">
+                    <input type="time" id="arrival-time">
+                    <select id="food-pref">
+                        <option value="any">Food Preference</option>
+                        <option value="veg">Vegetarian</option>
+                        <option value="non-veg">Non-Vegetarian</option>
+                    </select>
+                    <button id="generate-plan" class="btn-secondary">Generate Plan</button>
+                </div>
+                <div id="plan-output" class="plan-result hidden"></div>
+            </section>
+        </aside>
+    </main>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-container" class="chatbot-container">
+        <button id="chatbot-toggle" class="chatbot-btn">
+            <span class="icon">🤖</span>
+        </button>
+        <div id="chatbot-window" class="chatbot-window hidden">
+            <div class="chat-header">
+                <h3>VenueFlow AI</h3>
+                <button id="close-chat">×</button>
+            </div>
+            <div id="chat-messages" class="chat-messages">
+                <div class="message bot">Hello! How can I help you navigate the stadium today?</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ask about gates, food, restrooms...">
+                <button id="send-chat">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data/mockData.js"></script>
+    <script src="app.js"></script>
+    <!-- Google Maps API (Key will need to be added by user) -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</body>
+</html>
