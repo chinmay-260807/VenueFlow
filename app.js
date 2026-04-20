@@ -2,8 +2,8 @@
 
 // --- Configuration ---
 const CONFIG = {
-    GOOGLE_MAPS_KEY: 'YOUR_API_KEY',
-    GEMINI_API_KEY: 'YOUR_API_KEY',
+    GOOGLE_MAPS_KEY: 'YOUR_API_KEY', // Still needed for client-side Maps
+    // GEMINI_API_KEY is now handled securely by Vercel Serverless Functions (/api/chat.js)
     FIREBASE_CONFIG: {
         apiKey: "YOUR_API_KEY",
         authDomain: "your-project.firebaseapp.com",
@@ -180,18 +180,16 @@ async function askGemini(question) {
     `;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${CONFIG.GEMINI_API_KEY}`, {
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
+            body: JSON.stringify({ prompt })
         });
 
         const data = await response.json();
-        return data.candidates[0].content.parts[0].text;
+        return data.text || data.error || "I'm having trouble thinking. Try again!";
     } catch (error) {
-        console.error("Gemini API Error:", error);
+        console.error("API Error:", error);
         return "I'm having trouble connecting to my brain right now. Please try again or visit a Help Desk.";
     }
 }
